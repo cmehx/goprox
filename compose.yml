@@ -1,11 +1,35 @@
 services:
-  proxy:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  goprox:
+    container_name: goprox
+    build: .
     ports:
-      - "8080:8080"
-    environment:
-      - PROXY_TARGET=http://example.com
+      - "8180:8080"
     volumes:
-      - ./logs:/logs
+      - ./cmd:/app/cmd
+      - ./internal:/app/internal
+      - ./pkg:/app/pkg
+      - ./go.mod:/app/go.mod
+      - ./go.sum:/app/go.sum
+    environment:
+      - PROXY_TARGET=http://example.com  # Remplace par l'URL de ton proxy
+    command: ["air", "-c", ".air.toml"]  # Utiliser Air pour le live reload
+    working_dir: /app
+    restart: on-failure
+    depends_on:
+      - goprox-db  # Si tu ajoutes une base de données plus tard
+
+  # Optionnel : Base de données PostgreSQL
+  goprox-db:
+    image: postgres:13-alpine
+    container_name: goprox-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: goprox
+    volumes:
+      - goprox-db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  goprox-db-data:

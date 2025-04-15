@@ -1,3 +1,3 @@
 module github.com/cmehx/goprox
 
-go 1.21
+go 1.23

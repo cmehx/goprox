@@ -1,22 +1,20 @@
-# Étape 1 : build l'app
-FROM golang:1.22 as builder
+# Choisir l'image Go officielle, version >= 1.16
+FROM golang:1.23-alpine
 
+# Définir le répertoire de travail dans le conteneur
 WORKDIR /app
+
+# Installer Air
+RUN go install github.com/air-verse/air@latest
+
+# Copier go.mod et go.sum dans le conteneur pour gérer les dépendances
 COPY go.mod go.sum ./
+
+# Télécharger les dépendances Go (utilise le cache Docker pour améliorer les performances)
 RUN go mod download
 
+# Copier le code source dans le conteneur (cmd, internal, pkg, etc.)
 COPY . .
-RUN go build -o proxy ./cmd/proxy
 
-# Étape 2 : image finale minimale
-FROM debian:bookworm-slim
-
-# Crée un user non-root (bonne pratique)
-RUN useradd -m appuser
-
-COPY --from=builder /app/proxy /usr/local/bin/proxy
-
-USER appuser
-EXPOSE 8080
-
-CMD ["proxy"]
+# Lancer Air avec le fichier de configuration .air.toml (à définir dans ton projet)
+CMD ["air", "-c", ".air.toml"]

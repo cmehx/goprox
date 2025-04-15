@@ -1,0 +1,19 @@
+# .air.toml
+
+# Dossier à surveiller pour les changements
+root = "."
+
+# Commande à exécuter au démarrage (remplacer par la commande Go adéquate)
+[build]
+  cmd = "go run cmd/proxy/main.go"
+  bin = "app" # Ce nom peut être changé
+
+# Watch directories
+[watch]
+  # Dossiers à surveiller pour les changements
+  dirs = ["cmd", "internal", "pkg"]
+
+# Ignore certaines extensions ou fichiers
+[ignore]
+  dirs = ["assets", "static"]
+  files = ["*.md", "*.yaml"]
