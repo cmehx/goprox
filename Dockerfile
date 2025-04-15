@@ -6,10 +6,10 @@ WORKDIR /app
 
 # Installer Air
 RUN go install github.com/air-verse/air@latest
-
+RUN go install github.com/joho/godotenv/cmd/godotenv@latest
 # Copier go.mod et go.sum dans le conteneur pour gérer les dépendances
 COPY go.mod go.sum ./
-
+#RUN go mod tidy
 # Télécharger les dépendances Go (utilise le cache Docker pour améliorer les performances)
 RUN go mod download
 

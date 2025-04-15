@@ -3,22 +3,19 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/cmehx/goprox/internal/proxy"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	target := os.Getenv("PROXY_TARGET")
-	if target == "" {
-		log.Fatal("PROXY_TARGET not set")
-	}
+	// Charger la configuration
+	cfg := config.Load()
 
-	handler := proxy.New(target)
+	// Afficher un message de démarrage
+	log.Printf("Starting proxy on :%s -> %s\n", cfg.Port, cfg.ProxyTarget)
 
-	log.Println("Starting proxy on :8080")
-	err := http.ListenAndServe(":8080", handler)
-	if err != nil {
-		log.Fatalf("Server failed: %v", err)
-	}
+	// Créer le handler pour le proxy
+	handler := proxy.New(cfg.ProxyTarget)
+
+	// Lancer le serveur HTTP
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, handler))
 }

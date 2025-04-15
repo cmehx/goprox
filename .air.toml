@@ -1,19 +1,18 @@
 # .air.toml
 
-# Dossier à surveiller pour les changements
 root = "."
+tmp_dir = "tmp"
 
-# Commande à exécuter au démarrage (remplacer par la commande Go adéquate)
 [build]
-  cmd = "go run cmd/proxy/main.go"
-  bin = "app" # Ce nom peut être changé
+  cmd = "go build -o tmp/app ./cmd/proxy"
+  bin = "tmp/app"
+  include_ext = ["go"]
+  exclude_dir = ["tmp", "vendor"]
+  delay = 1000 # millisecondes de délai avant de recompiler
 
-# Watch directories
+[log]
+  time = true
+
 [watch]
-  # Dossiers à surveiller pour les changements
   dirs = ["cmd", "internal", "pkg"]
-
-# Ignore certaines extensions ou fichiers
-[ignore]
-  dirs = ["assets", "static"]
-  files = ["*.md", "*.yaml"]
+  exclude = ["tmp", "vendor"]
